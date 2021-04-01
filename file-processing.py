@@ -8,7 +8,7 @@ def core():
   nltk.download('popular', quiet=True)
 
   #file opening, might need adusting depending on file input type, need the actual file to refine
-  qnafile=open('qnafile.txt','r')
+  qnafile=open('Library_Knowledge_Base.xlsx','r')
   raw=qnafile.read()
   #converts to lowercase for matching reasons
   raw = raw.lower()
