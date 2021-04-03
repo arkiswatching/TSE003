@@ -54,12 +54,10 @@ def text_normalisation(text):
 
 def chat():
     print("LiBot: Hello! I'm LiBot, a chatbot created to help you with any questions you may have regarding the University of Lincoln's library. Type 'exit' if you wish to exit the program.")
-    normalised_input = ""
-    while normalised_input != "exit":
+    loop = True
+    while loop == True:
         user_input = input('User: ')
         normalised_input = text_normalisation(user_input)
-        if normalised_input == "exit":
-            break
 
         tfidf = TfidfVectorizer() # initialises vectorizor
         df_tfidf = tfidf.fit_transform(df['Normalised Context']).toarray() # vectorizing context into array
