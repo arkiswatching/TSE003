@@ -93,7 +93,9 @@ class chat_GUI:
                             rely = 0.08)
         self.chatscreen.configure(cursor="arrow", state=DISABLED)
         self.chatscreen.configure(state=NORMAL)
-        self.chatscreen.insert(END, "LiBot: Hello! I'm LiBot, a chatbot created to help you with any questions you may have regarding the University of Lincoln's library. Press the 'esc' key if you wish to exit.\n\n")
+        welcome = "LiBot: Hello! I'm LiBot, a chatbot created to help you with any questions you may have regarding the University of Lincoln's library. Press the 'esc' key if you wish to exit.\n\n"
+        self.chatscreen.insert(END, welcome)
+        savefile.write(welcome)
         self.chatscreen.configure(state=DISABLED)
         
         #chatscreen interface scrollbar (self evidant what its for)
@@ -129,8 +131,8 @@ class chat_GUI:
         #enter command functionality
         self.messenger.bind("<Return>", self.entermsg)
         #when escaped out, the program saves to the log and exits.
-        self.messenger.bind("<Escape>", self.writelog)
-        #self.protocol(WM_DELETE_WINDOW, self.writelog)
+        self.messenger.bind("<Escape>", self.quit)
+        #self.protocol(WM_DELETE_WINDOW, self.quit)
         #sendbutton coding 
         sendbutton = Button(self.messengerplace,
                                 text = "Send",
@@ -172,18 +174,14 @@ class chat_GUI:
         self.chatscreen.configure(state=NORMAL)
         self.chatscreen.insert(END, botmessage)
         self.chatscreen.configure(state=DISABLED)
+        #write the user input and reply to the savefile log
+        savefile.write(usermessage+botmessage)
 
         #autoscroll to the end when sending
         self.chatscreen.see(END)
 
-    #write a chatlog and close if escape is pressed (NOTE: only works when escaped out)
-    def writelog(self, event):
-        savefile = open("logged conversation.txt", "a")
-        timestamp = datetime.now()
-        timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S")
-        log = self.chatscreen.get("1.0",END)
-        contents = timestamp + ":\n" + log + "\n"
-        savefile.write(contents)
+    #save the chatlog and close if escape is pressed (NOTE: only works when escaped out)
+    def quit(self, event):
         savefile.close()
         self.Window.destroy()
 
@@ -221,12 +219,20 @@ def get_response(message):
             get_response = df['Response'].loc[index]
         return get_response
 
+#user and bot name
 user_name = "User"
 bot_name = "LiBot"
 
+#colouration settings, makes it easier to do sweeping changes to the UI scheme
 BG = "#ffefd5"
 BGtext = "#ffffff"
 FGtext = "#000000"
+
+#save file data
+timestamp = datetime.now()
+timestamp = timestamp.strftime("%Y-%m-%d %H-%M-%S")
+filename = str(timestamp) + ".txt"
+savefile = open(filename, "a+")
 
 file_dir = os.path.dirname(os.path.abspath(__file__)) # assigns file directory to a variable
 df = pd.read_excel(file_dir + "\Library_Knowledge_Base.xlsx", usecols = ['Context', 'Response']) # reads excel file
