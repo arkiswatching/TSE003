@@ -19,10 +19,17 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", 'sklearn'])
 finally:
     import sklearn
+try:
+    import openpyxl
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", 'openpyxl'])
+finally:
+    import openpyxl
 import os
 import subprocess
 import sys
 import re
+nltk.download('popular', quiet=True)
 from sklearn.feature_extraction.text import TfidfVectorizer # to perform tfidf
 from sklearn.metrics import pairwise_distances # to perform cosine similarity
 from nltk.stem import wordnet # to perform lemmitization
