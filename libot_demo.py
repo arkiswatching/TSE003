@@ -93,7 +93,7 @@ class chat_GUI:
                             rely = 0.08)
         self.chatscreen.configure(cursor="arrow", state=DISABLED)
         self.chatscreen.configure(state=NORMAL)
-        self.chatscreen.insert(END, "LiBot: Hello! I'm LiBot, a chatbot created to help you with any questions you may have regarding the University of Lincoln's library. Press the 'esc' key if you wish to exit.\n")
+        self.chatscreen.insert(END, "LiBot: Hello! I'm LiBot, a chatbot created to help you with any questions you may have regarding the University of Lincoln's library. Press the 'esc' key if you wish to exit.\n\n")
         self.chatscreen.configure(state=DISABLED)
         
         #chatscreen interface scrollbar (self evidant what its for)
@@ -159,7 +159,7 @@ class chat_GUI:
         #clear messenger when message is sent
         self.messenger.delete(0, END)
         #dump message from user on the end of the chatlog
-        usermessage = f"{user_name}: {message} \n"
+        usermessage = f"{user_name}: {message} \n\n"
         self.chatscreen.configure(state=NORMAL)
         self.chatscreen.insert(END, usermessage)
         self.chatscreen.configure(state=DISABLED)
@@ -168,7 +168,7 @@ class chat_GUI:
         #botmessage = "Testing bot: Response!\n"
 
         #chatbot response
-        botmessage = f"{bot_name}: {response} \n"
+        botmessage = f"{bot_name}: {response} \n\n"
         self.chatscreen.configure(state=NORMAL)
         self.chatscreen.insert(END, botmessage)
         self.chatscreen.configure(state=DISABLED)
