@@ -53,7 +53,7 @@ def text_normalisation(text):
 
 
 def chat():
-    print("LiBot: Hello! I'm LiBot, a chatbot created to help you with any questions you may have regarding the University of Lincoln's library. Type 'exit' if you wish to exit the program.")
+    print("LiBot: Hello! I'm LiBot, a chatbot created to help you with any questions you may have regarding the University of Lincoln's library. Press the 'esc' key if you wish to exit.")
     loop = True
     while loop == True:
         user_input = input('User: ')
