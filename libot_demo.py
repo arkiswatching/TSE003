@@ -231,8 +231,7 @@ FGtext = "#000000"
 #save file data
 timestamp = datetime.now()
 timestamp = timestamp.strftime("%Y-%m-%d %H-%M-%S")
-filename = str(timestamp) + ".txt"
-savefile = open(filename, "a+")
+savefile = open(str(timestamp) + ".txt", "a")
 
 file_dir = os.path.dirname(os.path.abspath(__file__)) # assigns file directory to a variable
 df = pd.read_excel(file_dir + "\Library_Knowledge_Base.xlsx", usecols = ['Context', 'Response']) # reads excel file
