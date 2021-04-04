@@ -1,6 +1,15 @@
 # trys to import packages, on error they are downloaded then imported
 import os
 import subprocess
+import sys
+import re
+#attempt at fixing the cmd "no module named pandas" error
+try:
+    import wheel
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", 'wheel'])
+finally:
+    import wheel #######################################
 try:
     import pandas as pd
     import numpy as np
@@ -27,8 +36,6 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", 'openpyxl'])
 finally:
     import openpyxl
-import sys
-import re
 nltk.download('popular', quiet=True)
 from sklearn.feature_extraction.text import TfidfVectorizer # to perform tfidf
 from sklearn.metrics import pairwise_distances # to perform cosine similarity
