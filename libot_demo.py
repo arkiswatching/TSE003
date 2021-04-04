@@ -1,4 +1,6 @@
 # trys to import packages, on error they are downloaded then imported
+import os
+import subprocess
 try:
     import pandas as pd
     import numpy as np
@@ -25,8 +27,6 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", 'openpyxl'])
 finally:
     import openpyxl
-import os
-import subprocess
 import sys
 import re
 nltk.download('popular', quiet=True)
