@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 import re
+import string
 #attempt at fixing the cmd "no module named pandas" error
 try:
     import wheel
@@ -36,13 +37,16 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", 'openpyxl'])
 finally:
     import openpyxl
-nltk.download('popular', quiet=True)
+nltk.download('punkt', quiet = True) 
+nltk.download('wordnet', quiet = True)
 from sklearn.feature_extraction.text import TfidfVectorizer # to perform tfidf
 from sklearn.metrics import pairwise_distances # to perform cosine similarity
 from nltk.stem import wordnet # to perform lemmitization
 from nltk import pos_tag # for parts of speech
 from nltk import word_tokenize # to create tokens
 from nltk.corpus import stopwords # for stop words (needs integrating)
+from nltk.corpus import wordnet as wn
+from collections import defaultdict
 
 
 #python chatwindow program
@@ -193,38 +197,36 @@ class chat_GUI:
         self.Window.destroy()
 
 
-def text_normalisation(text):
-        text=str(text).lower() # text to lower case
-        spl_char_text=re.sub(r'[^ a-z]','',text) # removing special characters
-        tokens=nltk.word_tokenize(spl_char_text) # word tokenizing
-        lema=wordnet.WordNetLemmatizer() # intializing lemmatization
-        tags_list=pos_tag(tokens,tagset=None) # parts of speech
-        lema_words=[] # empty list
-        for token,pos_token in tags_list:
-            if pos_token.startswith('V'): #verbs
-                pos_val= 'v'
-            elif pos_token.startswith('J'): #Adjective
-                pos_val='a'
-            elif pos_token.startswith('R'): #adverb
-                pos_val= 'r'
-            else:
-                pos_val= 'n' # noun
-            lema_token=lema.lemmatize(token,pos_val) # performing lemmatization
-            lema_words.append(lema_token) # appending the lematized token into lists
-        return " ".join(lema_words) # returns the lematized token into sentences
+def txt_normaliser(text):
+    text = str(text).lower() # text to lower case
+    spl_char_text=re.sub(r'[^ a-z]','',text) #removing special characters
+    remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
+    wordTokenizer = nltk.word_tokenize(text.translate(remove_punct_dict)) #tokenizer
+    #pos tagging and lemmatization
+    tag_map = defaultdict(lambda : wn.NOUN)
+    tag_map['J'] = wn.ADJ
+    tag_map['V'] = wn.VERB
+    tag_map['R'] = wn.ADV
+    ltizer = wordnet.WordNetLemmatizer()
+    ltizer_words= []
+    rmv = [i for i in wordTokenizer if i]
+    for token, tag in nltk.pos_tag(rmv):
+        lemma = ltizer.lemmatize(token, tag_map[tag[0]])
+        ltizer_words.append(lemma)
+    return " ".join(ltizer_words)
 
 def get_response(message):
-        norm_message = text_normalisation(message)
-        tfidf = TfidfVectorizer(stop_words='english') # initialises vectorizor
-        df_tfidf = tfidf.fit_transform(df['Normalised Context']).toarray() # vectorizing context into array
-        input_tfidf = tfidf.transform([norm_message]).toarray() # vectorizing input into array
-        cos_sim = 1 - pairwise_distances(df_tfidf,input_tfidf,metric = 'cosine') # performs cosine similarity between vectoried data and input
-        index = cos_sim.argmax() # finds largest similarity values index
-        if cos_sim[index] < 0.4:
-            get_response = "Sorry, I didn't understand that."
-        else:
-            get_response = df['Response'].loc[index]
-        return get_response
+    norm_message = txt_normaliser(message)
+    tfidf = TfidfVectorizer(stop_words='english') # initialises vectorizor
+    df_tfidf = tfidf.fit_transform(df['Normalised Context']).toarray() # vectorizing context into array
+    input_tfidf = tfidf.transform([norm_message]).toarray() # vectorizing input into array
+    cos_sim = 1 - pairwise_distances(df_tfidf,input_tfidf,metric = 'cosine') # performs cosine similarity between vectoried data and input
+    index = cos_sim.argmax() # finds largest similarity values index
+    if cos_sim[index] < 0.4:
+        get_response = "Sorry, I didn't understand that."
+    else:
+        get_response = df['Response'].loc[index]
+    return get_response
 
 #user and bot name
 user_name = "User"
