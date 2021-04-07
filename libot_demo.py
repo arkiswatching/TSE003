@@ -245,7 +245,7 @@ savefile = open(str(timestamp) + ".txt", "a")
 file_dir = os.path.dirname(os.path.abspath(__file__)) # assigns file directory to a variable
 df = pd.read_excel(file_dir + "\Library_Knowledge_Base.xlsx", usecols = ['Context', 'Response']) # reads excel file
 df.ffill(axis = 0, inplace = True) # fills 'NaN' cells
-df['Normalised Context'] = df['Context'].apply(text_normalisation) # creates normalised column using a function
+df['Normalised Context'] = df['Context'].apply(txt_normaliser) # creates normalised column using a function
 
 if __name__ == "__main__":
     app = chat_GUI()
