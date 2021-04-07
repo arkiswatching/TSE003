@@ -215,7 +215,7 @@ def text_normalisation(text):
 
 def get_response(message):
         norm_message = text_normalisation(message)
-        tfidf = TfidfVectorizer() # initialises vectorizor
+        tfidf = TfidfVectorizer(stop_words='english') # initialises vectorizor
         df_tfidf = tfidf.fit_transform(df['Normalised Context']).toarray() # vectorizing context into array
         input_tfidf = tfidf.transform([norm_message]).toarray() # vectorizing input into array
         cos_sim = 1 - pairwise_distances(df_tfidf,input_tfidf,metric = 'cosine') # performs cosine similarity between vectoried data and input
