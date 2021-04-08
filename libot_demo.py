@@ -37,8 +37,7 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", 'openpyxl'])
 finally:
     import openpyxl
-nltk.download('punkt', quiet = True) 
-nltk.download('wordnet', quiet = True)
+nltk.download('popular', quiet = True) 
 from sklearn.feature_extraction.text import TfidfVectorizer # to perform tfidf
 from sklearn.metrics import pairwise_distances # to perform cosine similarity
 from nltk.stem import wordnet # to perform lemmitization
