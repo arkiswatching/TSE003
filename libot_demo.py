@@ -75,17 +75,17 @@ class chat_GUI:
     def Setup(self):
 
         #building the actual core program window
-        self.Window.title("Chat program")
+        self.Window.title("LiBot - University of Lincoln Library Chatbot")
         self.Window.resizable(width = False,
                               height = False)
-        self.Window.configure(width = 470,
+        self.Window.configure(width = 500,
                               height = 550,
-                              bg = BG)
+                              bg = "#345c97")
         self.Title = Label(self.Window,
-                             bg = BG, 
-                              fg = FGtext,
+                             bg = "#002654", 
+                              fg = "white",
                               text = "LiBot interface V0.4",
-                               font = "Helvetica 13 bold",
+                               font = "sans-serif 14 bold",
                                pady = 5)
         self.Title.place(relwidth = 1)
 
@@ -95,11 +95,11 @@ class chat_GUI:
                              height = 2,
                              bg = BGtext,
                              fg = FGtext,
-                             font = "Helvetica 14", 
+                             font = "sans-serif 12", 
                              padx = 5,
                              pady = 5)
-        self.chatscreen.place(relheight = 0.745,
-                            relwidth = 1, 
+        self.chatscreen.place(relheight = 0.805,
+                            relwidth = 0.95, 
                             rely = 0.08)
         self.chatscreen.configure(cursor="arrow", state=DISABLED)
         self.chatscreen.configure(state=NORMAL)
@@ -109,26 +109,26 @@ class chat_GUI:
         self.chatscreen.configure(state=DISABLED)
         
         #chatscreen interface scrollbar (self evidant what its for)
-        scrollbar = Scrollbar(self.chatscreen)
-        # place the scroll bar on chatscreen (NOT WINDOW)
-        scrollbar.place(relheight = 1,
-                        relx = 0.974)
+        scrollbar = Scrollbar(self.Window)
+        # place the scroll bar on window so doesn't cover chatscreen
+        scrollbar.place(relheight = 0.885,
+                        relx = 0.958)
         #command so it scrolls the text (y-axis)
         scrollbar.config(command = self.chatscreen.yview)
 
         #cosmetic labelling/placement of messenger
         self.messengerplace = Label(self.Window,
-                                 bg = BG,
-                                 height = 80)
+                                 bg = "#002654",
+                                 height = 50)
         
         self.messengerplace.place(relwidth = 1,
-                               rely = 0.825)
+                               rely = 0.885)
 
         #widget for user to enter text
         self.messenger = Entry(self.messengerplace,
                               bg = BGtext,
                               fg = FGtext,
-                              font = "Helvetica 13")
+                              font = "sans-serif 12")
 
         #place the enter message widget in the main window
         self.messenger.place(relwidth = 0.74,
@@ -146,9 +146,10 @@ class chat_GUI:
         #sendbutton coding 
         sendbutton = Button(self.messengerplace,
                                 text = "Send",
-                                font = "Helvetica 10 bold", 
+                                font = "sans-serif 11 bold", 
                                 width = 20,
-                                bg = BG,
+                                bg = "#002654",
+                                fg = "white",
                                 command = lambda: self.entermsg(None))
 
         sendbutton.place(relx = 0.77,
@@ -232,7 +233,7 @@ user_name = "User"
 bot_name = "LiBot"
 
 #colouration settings, makes it easier to do sweeping changes to the UI scheme
-BG = "#ffefd5"
+BG = "#002654"
 BGtext = "#ffffff"
 FGtext = "#000000"
 
