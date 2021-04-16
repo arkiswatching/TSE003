@@ -37,6 +37,12 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", 'openpyxl'])
 finally:
     import openpyxl
+try:
+    from spellchecker import SpellChecker
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", 'pyspellchecker'])
+finally:
+    from spellchecker import SpellChecker
 nltk.download('popular', quiet = True) 
 from sklearn.feature_extraction.text import TfidfVectorizer # to perform tfidf
 from sklearn.metrics import pairwise_distances # to perform cosine similarity
@@ -159,7 +165,7 @@ class chat_GUI:
 
     #function to send if enter is pressed
     def entermsg(self, event):
-        message=self.messenger.get()
+        message = spell_check(self.messenger.get())
         response = get_response(message)
         self.chat_insert(message, response)
 
@@ -196,6 +202,13 @@ class chat_GUI:
         savefile.close()
         self.Window.destroy()
 
+def spell_check(text):
+    text = text.split(" ")
+    i = 0
+    for word in text:
+        text[i] = SpellChecker().correction(word)
+        i = i + 1
+    return " ".join(text)
 
 def txt_normaliser(text):
     text = str(text).lower() # text to lower case
@@ -217,7 +230,7 @@ def txt_normaliser(text):
 
 def get_response(message):
     norm_message = txt_normaliser(message)
-    tfidf = TfidfVectorizer(stop_words='english') # initialises vectorizor
+    tfidf = TfidfVectorizer(stop_words = stopwords.words('english')) # initialises vectorizor
     df_tfidf = tfidf.fit_transform(df['Normalised Context']).toarray() # vectorizing context into array
     input_tfidf = tfidf.transform([norm_message]).toarray() # vectorizing input into array
     cos_sim = 1 - pairwise_distances(df_tfidf,input_tfidf,metric = 'cosine') # performs cosine similarity between vectoried data and input
