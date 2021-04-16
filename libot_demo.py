@@ -165,12 +165,14 @@ class chat_GUI:
 
     #function to send if enter is pressed
     def entermsg(self, event):
-        message = spell_check(self.messenger.get())
+        message = self.messenger.get()
+        self.chat_insert_message(message)
+        message = spell_check(message)
         response = get_response(message)
-        self.chat_insert(message, response)
+        self.chat_insert_response(response)
 
     #insert from messenger into chatscreen
-    def chat_insert(self, message, response):
+    def chat_insert_message(self, message):
         #if messenger is empty dont trigger
         if not message:
             return
@@ -182,7 +184,9 @@ class chat_GUI:
         self.chatscreen.configure(state=NORMAL)
         self.chatscreen.insert(END, usermessage)
         self.chatscreen.configure(state=DISABLED)
+        savefile.write(usermessage)
 
+    def chat_insert_response(self, response):
         #bot response debug command
         #botmessage = "Testing bot: Response!\n"
 
@@ -192,7 +196,7 @@ class chat_GUI:
         self.chatscreen.insert(END, botmessage)
         self.chatscreen.configure(state=DISABLED)
         #write the user input and reply to the savefile log
-        savefile.write(usermessage+botmessage)
+        savefile.write(botmessage)
 
         #autoscroll to the end when sending
         self.chatscreen.see(END)
