@@ -222,7 +222,7 @@ def get_response(message):
     input_tfidf = tfidf.transform([norm_message]).toarray() # vectorizing input into array
     cos_sim = 1 - pairwise_distances(df_tfidf,input_tfidf,metric = 'cosine') # performs cosine similarity between vectoried data and input
     index = cos_sim.argmax() # finds largest similarity values index
-    if cos_sim[index] < 0.4:
+    if cos_sim[index] < 0.6:
         get_response = "Sorry, I didn't understand that."
     else:
         get_response = df['Response'].loc[index]
