@@ -95,6 +95,27 @@ class chat_GUI:
                                pady = 5)
         self.Title.place(relwidth = 1)
 
+###################button start#################################
+
+        voicebutton = Button(self.Title,
+                                text = "🎤",
+                                font = "sans-serif 11", 
+                                #width = 20,
+                                #height = 20,
+                                bg = "#002654",
+                                fg = "white")
+                                #command = lambda: self.entermsg(None))
+        
+        #still getting voice to work fully, but the button, and its placement has been fixed to bind to the function when integrated properly.
+        #voicebutton.bind('<ButtonPress-1>', self.voiceinput())
+        #voicebutton.bind('<ButtonRelease-1>', self.voiceinput()
+
+        voicebutton.place(relx = 0.95,
+                             rely = 0.20,
+                             relheight = 0.70, 
+                             relwidth = 0.05)
+        ###################button end#################################        
+        
         #chatscreen interface (shows chat to date)
         self.chatscreen = Text(self.Window,
                              width = 20, 
