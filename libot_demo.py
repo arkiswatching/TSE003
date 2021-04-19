@@ -101,7 +101,9 @@ class chat_GUI:
                              height = 2,
                              bg = BGtext,
                              fg = FGtext,
-                             font = "sans-serif 12", 
+                             font = "sans-serif 12",
+                             #wrapping perameter
+                             wrap = WORD,
                              padx = 5,
                              pady = 5)
         self.chatscreen.place(relheight = 0.805,
@@ -117,7 +119,8 @@ class chat_GUI:
         #chatscreen interface scrollbar (self evidant what its for)
         scrollbar = Scrollbar(self.Window)
         # place the scroll bar on window so doesn't cover chatscreen
-        scrollbar.place(relheight = 0.885,
+        scrollbar.place(relheight = 0.805,
+                        rely = 0.08,
                         relx = 0.958)
         #command so it scrolls the text (y-axis)
         scrollbar.config(command = self.chatscreen.yview)
@@ -131,17 +134,33 @@ class chat_GUI:
                                rely = 0.885)
 
         #widget for user to enter text
-        self.messenger = Entry(self.messengerplace,
+        #text used over entry to allow for wrapping
+        self.messenger = Text(self.messengerplace,
                               bg = BGtext,
                               fg = FGtext,
+                              wrap = WORD,
+                              #padx = 5,#, 10),
+                              #wraplength = 500,
                               font = "sans-serif 12")
 
         #place the enter message widget in the main window
-        self.messenger.place(relwidth = 0.74,
+        #self.messenger.place(relwidth = 0.74,
+        self.messenger.place(relwidth = 0.70,
                             relheight = 0.06,
                             rely = 0.008,
                             relx = 0.011)
         
+        #messenger interface scrollbar (self evidant what its for)
+        messengerscrollbar = Scrollbar(self.messengerplace)
+        # place the scroll bar on window so doesn't cover chatscreen
+        messengerscrollbar.place(relheight = 0.06,
+                                  relx = 0.72,
+                                  rely = 0.008
+                                  )
+                                  #relx = 0.958)
+        #command so it scrolls the text (y-axis)
+        messengerscrollbar.config(command = self.messenger.yview)
+
         #auto focus on the entry message box when the window is active
         self.messenger.focus()
         #enter command functionality
@@ -165,7 +184,8 @@ class chat_GUI:
 
     #function to send if enter is pressed
     def entermsg(self, event):
-        message = self.messenger.get()
+        #values to take row 1, character 0 to end
+        message = self.messenger.get(1.0, END)
         self.chat_insert_message(message)
         message = spell_check(message)
         response = get_response(message)
@@ -178,9 +198,10 @@ class chat_GUI:
             return
 
         #clear messenger when message is sent
-        self.messenger.delete(0, END)
+        #values to take row 1, character 0 to end
+        self.messenger.delete(1.0, END)
         #dump message from user on the end of the chatlog
-        usermessage = f"{user_name}: {message} \n\n"
+        usermessage = f"{user_name}: {message} \n"#\n"
         self.chatscreen.configure(state=NORMAL)
         self.chatscreen.insert(END, usermessage)
         self.chatscreen.configure(state=DISABLED)
