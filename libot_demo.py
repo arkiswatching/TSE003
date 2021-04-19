@@ -4,13 +4,13 @@ import subprocess
 import sys
 import re
 import string
-#attempt at fixing the cmd "no module named pandas" error
+#attempt at fixing the cmd "no module named BLANK" error
 try:
     import wheel
 except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", 'wheel'])
 finally:
-    import wheel #######################################
+    import wheel
 try:
     import pandas as pd
     import numpy as np
@@ -106,7 +106,7 @@ class chat_GUI:
                                 fg = "white")
                                 #command = lambda: self.entermsg(None))
         
-        #still getting voice to work fully, but the button, and its placement has been fixed to bind to the function when integrated properly.
+        #still getting voice to work fully, but the button, and its placement and method of acknowledgment has been fixed to bind to the function when integrated properly.
         #voicebutton.bind('<ButtonPress-1>', self.voiceinput())
         #voicebutton.bind('<ButtonRelease-1>', self.voiceinput()
 
