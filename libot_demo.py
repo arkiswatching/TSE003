@@ -47,15 +47,15 @@ finally:
 try:
     import speech_recognition as speech
 except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", 'speech_recognition'])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", 'SpeechRecognition'])
 finally:
-    import speech_recognition# import speech
+    import speech_recognition as speech# import speech
 #try:
-#    import PyAudio as speech
+#    import PyAudio
 #except ImportError:
-#    subprocess.check_call([sys.executable, "-m", "pip", "install", 'PyAudio'])
+#    subprocess.check_call([sys.executable, "-m", "pip", "install", 'pyaudio'])
 #finally:
-#    import PyAudio as speech # import mic capability
+#    import PyAudio #import mic capability
 #########################speech recognition import end###################################
 nltk.download('popular', quiet = True) 
 from sklearn.feature_extraction.text import TfidfVectorizer # to perform tfidf
