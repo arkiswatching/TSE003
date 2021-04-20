@@ -265,7 +265,7 @@ class chat_GUI:
 #                audio = robot.listen(source) #recieves voice input from microphone
     ########################voice addition v4 end######################################################
     ########################voice terminate v4######################################################
-    def voiceterminate(self, event, audio):
+    def voiceterminate(self, event):
         #debug command to test button, to be removed when function the function is finished
         print ("terminated.")
 #        #in theory, inserts the input as a string into the textbox and calls the entermsg function immediately to send
