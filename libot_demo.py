@@ -94,9 +94,8 @@ class chat_GUI:
                                font = "sans-serif 14 bold",
                                pady = 5)
         self.Title.place(relwidth = 1)
-
-###################button start#################################
-
+        
+        ###################button start#################################
         voicebutton = Button(self.Title,
                                 text = "🎤",
                                 font = "sans-serif 11", 
@@ -104,17 +103,16 @@ class chat_GUI:
                                 #height = 20,
                                 bg = "#002654",
                                 fg = "white")
-                                #command = lambda: self.entermsg(None))
-        
-        #still getting voice to work fully, but the button, and its placement and method of acknowledgment has been fixed to bind to the function when integrated properly.
-        #voicebutton.bind('<ButtonPress-1>', self.voiceinput())
-        #voicebutton.bind('<ButtonRelease-1>', self.voiceinput()
+
+        #still getting voice function to work, but the button, its placement and method of acknowledgment has been fixed to bind to the function when integrated properly.
+        voicebutton.bind('<ButtonPress-1>', self.voiceinput)
+        voicebutton.bind('<ButtonRelease-1>', self.voiceterminate)
 
         voicebutton.place(relx = 0.95,
                              rely = 0.20,
                              relheight = 0.70, 
                              relwidth = 0.05)
-        ###################button end#################################        
+        ###################button end#################################
         
         #chatscreen interface (shows chat to date)
         self.chatscreen = Text(self.Window,
@@ -242,7 +240,25 @@ class chat_GUI:
 
         #autoscroll to the end when sending
         self.chatscreen.see(END)
-
+        
+    ########################voice addition v4######################################################
+    def voiceinput(self, event):
+        #debug command to test button, to be removed when function the function is finished
+        print ("acknowledged.")
+        robot = speech.Recognizer()
+        microphone = speech.Microphone()
+        with microphone as source:
+                audio = robot.listen(source) #recieves voice input from microphone
+    ########################voice addition v4 end######################################################
+    ########################voice terminate v4######################################################
+    def voiceterminate(self, event, audio):
+        #debug command to test button, to be removed when function the function is finished
+        print ("terminated.")
+        #in theory, inserts the input as a string into the textbox and calls the entermsg function immediately to send
+        self.messenger.insert(END, audio)
+        self.entermsg(None)
+    ########################voice terminate v4 end######################################################
+        
     #save the chatlog and close if escape is pressed (NOTE: only works when escaped out)
     def quit(self, event):
         savefile.close()
