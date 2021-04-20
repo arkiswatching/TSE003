@@ -43,6 +43,20 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", 'pyspellchecker'])
 finally:
     from spellchecker import SpellChecker
+########################speech recognition imports##########################################
+try:
+    import speech_recognition as speech
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", 'speech_recognition'])
+finally:
+    import speech_recognition# import speech
+#try:
+#    import PyAudio as speech
+#except ImportError:
+#    subprocess.check_call([sys.executable, "-m", "pip", "install", 'PyAudio'])
+#finally:
+#    import PyAudio as speech # import mic capability
+#########################speech recognition import end###################################
 nltk.download('popular', quiet = True) 
 from sklearn.feature_extraction.text import TfidfVectorizer # to perform tfidf
 from sklearn.metrics import pairwise_distances # to perform cosine similarity
@@ -245,18 +259,18 @@ class chat_GUI:
     def voiceinput(self, event):
         #debug command to test button, to be removed when function the function is finished
         print ("acknowledged.")
-        robot = speech.Recognizer()
-        microphone = speech.Microphone()
-        with microphone as source:
-                audio = robot.listen(source) #recieves voice input from microphone
+#        robot = speech.Recognizer()
+#        microphone = speech.Microphone()
+#        with microphone as source:
+#                audio = robot.listen(source) #recieves voice input from microphone
     ########################voice addition v4 end######################################################
     ########################voice terminate v4######################################################
     def voiceterminate(self, event, audio):
         #debug command to test button, to be removed when function the function is finished
         print ("terminated.")
-        #in theory, inserts the input as a string into the textbox and calls the entermsg function immediately to send
-        self.messenger.insert(END, audio)
-        self.entermsg(None)
+#        #in theory, inserts the input as a string into the textbox and calls the entermsg function immediately to send
+#        self.messenger.insert(END, audio)
+#        self.entermsg(None)
     ########################voice terminate v4 end######################################################
         
     #save the chatlog and close if escape is pressed (NOTE: only works when escaped out)
