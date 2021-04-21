@@ -126,7 +126,6 @@ class chat_GUI:
 
         #still getting voice function to work, but the button, its placement and method of acknowledgment has been fixed to bind to the function when integrated properly.
         voicebutton.bind('<ButtonPress-1>', self.voiceinput)
-        voicebutton.bind('<ButtonRelease-1>', self.voiceterminate)
 
         voicebutton.place(relx = 0.95,
                              rely = 0.20,
@@ -268,17 +267,17 @@ class chat_GUI:
         robot = speech.Recognizer()
         microphone = speech.Microphone()
         with microphone as source:
-                audio = robot.listen(source) #recieves voice input from microphone
-                sentence = robot.recognize_google(audio)
+            audio = robot.listen(source) #recieves voice input from microphone
+        try:
+            self.messenger.insert(END, robot.recognize_google(audio))
+            self.entermsg(None)
+        except speech.UnknownValueError:
+            print("Unknown voice input.")
+        except speech.RequestError:
+            print("Something went wrong, error {0}".format(error))
+        except speech.UnboundLocalError:
+            print("Something went wrong, error {0}".format(error)) 
     ########################voice addition v4 end######################################################
-    ########################voice terminate v4######################################################
-    def voiceterminate(self, event):
-        #debug command to test button, to be removed when function the function is finished
-        print ("terminated.")
-        #in theory, inserts the input as a string into the textbox and calls the entermsg function immediately to send
-        self.messenger.insert(END, sentence)
-        self.entermsg(None)
-    ########################voice terminate v4 end######################################################
         
     #save the chatlog and close if escape is pressed (NOTE: only works when escaped out)
     def quit(self, event):
