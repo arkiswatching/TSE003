@@ -125,7 +125,8 @@ class chat_GUI:
                                 fg = "white")
 
         #still getting voice function to work, but the button, its placement and method of acknowledgment has been fixed to bind to the function when integrated properly.
-        voicebutton.bind('<ButtonPress-1>', self.voiceinput)
+        #voicebutton.bind('<ButtonPress-1>', self.voiceinput)
+        voicebutton.bind('<ButtonPress-1>', self.voicemessage)
 
         voicebutton.place(relx = 0.95,
                              rely = 0.20,
@@ -234,16 +235,16 @@ class chat_GUI:
         #if messenger is empty dont trigger
         if not message:
             return
-
-        #clear messenger when message is sent
-        #values to take row 1, character 0 to end
-        self.messenger.delete(1.0, END)
-        #dump message from user on the end of the chatlog
-        usermessage = f"{user_name}: {message} \n"#\n"
-        self.chatscreen.configure(state=NORMAL)
-        self.chatscreen.insert(END, usermessage)
-        self.chatscreen.configure(state=DISABLED)
-        savefile.write(usermessage)
+        else:
+            #clear messenger when message is sent
+            #values to take row 1, character 0 to end
+            self.messenger.delete(1.0, END)
+            #dump message from user on the end of the chatlog
+            usermessage = f"{user_name}: {message} \n\n"
+            self.chatscreen.configure(state=NORMAL)
+            self.chatscreen.insert(END, usermessage)
+            self.chatscreen.configure(state=DISABLED)
+            savefile.write(usermessage)
 
     def chat_insert_response(self, response):
         #bot response debug command
@@ -260,10 +261,19 @@ class chat_GUI:
         #autoscroll to the end when sending
         self.chatscreen.see(END)
         
+        ##########################voicemessage#####################################################
+    def voicemessage (self, event):
+        self.chatscreen.configure(state=NORMAL)
+        self.chatscreen.insert(END, bot_name + ": What would you like to say? Please speak clearly so I can understand you.\n\n")
+        self.chatscreen.configure(state=DISABLED)
+        self.chatscreen.see(END)
+        self.voiceinput(event)#, robot, microphone)
+        ############################voicemessage end###############################################
+
     ########################voice addition v4######################################################
     def voiceinput(self, event):
         #debug command to test button, to be removed when function the function is finished
-        print ("acknowledged.")
+        print ("acknowledged.")###################################################
         robot = speech.Recognizer()
         microphone = speech.Microphone()
         with microphone as source:
@@ -272,10 +282,22 @@ class chat_GUI:
             self.messenger.insert(END, robot.recognize_google(audio))
             self.entermsg(None)
         except speech.UnknownValueError:
+            self.chatscreen.configure(state=NORMAL)
+            self.chatscreen.insert(END, bot_name + ": Sorry, I didn't hear what you said. Please try again or type in the box below.\n\n")
+            self.chatscreen.configure(state=DISABLED)
+            self.chatscreen.see(END)
             print("Unknown voice input.")
         except speech.RequestError:
+            self.chatscreen.configure(state=NORMAL)
+            self.chatscreen.insert(END, bot_name + ": Sorry, I cannot access a microphone at this time. Please try again or type in the box below.\n\n")
+            self.chatscreen.configure(state=DISABLED)
+            self.chatscreen.see(END)
             print("Something went wrong, error {0}".format(error))
         except speech.UnboundLocalError:
+            self.chatscreen.configure(state=NORMAL)
+            self.chatscreen.insert(END, bot_name + ": Sorry, the voice functionality is experiencing difficulty right now. Please try again or type in the box below.\n\n")
+            self.chatscreen.configure(state=DISABLED)
+            self.chatscreen.see(END)
             print("Something went wrong, error {0}".format(error)) 
     ########################voice addition v4 end######################################################
         
