@@ -4,6 +4,7 @@ import subprocess
 import sys
 import re
 import string
+import threading
 #attempt at fixing the cmd "no module named BLANK" error
 try:
     import wheel
@@ -262,7 +263,7 @@ class chat_GUI:
         self.chatscreen.see(END)
         
         ##########################voicemessage#####################################################
-    def voicemessage (self, event):
+    def voicemessage(self, event):
         self.chatscreen.configure(state=NORMAL)
         self.chatscreen.insert(END, bot_name + ": What would you like to say? Please speak clearly so I can understand you.\n\n")
         self.chatscreen.configure(state=DISABLED)
@@ -272,33 +273,37 @@ class chat_GUI:
 
     ########################voice addition v4######################################################
     def voiceinput(self, event):
-        #debug command to test button, to be removed when function the function is finished
-        print ("acknowledged.")###################################################
-        robot = speech.Recognizer()
-        microphone = speech.Microphone()
-        with microphone as source:
-            audio = robot.listen(source) #recieves voice input from microphone
-        try:
-            self.messenger.insert(END, robot.recognize_google(audio))
-            self.entermsg(None)
-        except speech.UnknownValueError:
-            self.chatscreen.configure(state=NORMAL)
-            self.chatscreen.insert(END, bot_name + ": Sorry, I didn't hear what you said. Please try again or type in the box below.\n\n")
-            self.chatscreen.configure(state=DISABLED)
-            self.chatscreen.see(END)
-            print("Unknown voice input.")
-        except speech.RequestError:
-            self.chatscreen.configure(state=NORMAL)
-            self.chatscreen.insert(END, bot_name + ": Sorry, I cannot access a microphone at this time. Please try again or type in the box below.\n\n")
-            self.chatscreen.configure(state=DISABLED)
-            self.chatscreen.see(END)
-            print("Something went wrong, error {0}".format(error))
-        except speech.UnboundLocalError:
-            self.chatscreen.configure(state=NORMAL)
-            self.chatscreen.insert(END, bot_name + ": Sorry, the voice functionality is experiencing difficulty right now. Please try again or type in the box below.\n\n")
-            self.chatscreen.configure(state=DISABLED)
-            self.chatscreen.see(END)
-            print("Something went wrong, error {0}".format(error)) 
+        def voicemessage(self, event):
+            #debug command to test button, to be removed when function the function is finished
+            print ("acknowledged.")###################################################
+            robot = speech.Recognizer()
+            microphone = speech.Microphone()
+            with microphone as source:
+                audio = robot.listen(source) #recieves voice input from microphone
+            try:
+                self.messenger.insert(END, robot.recognize_google(audio))
+                self.entermsg(None)
+            except speech.UnknownValueError:
+                self.chatscreen.configure(state=NORMAL)
+                self.chatscreen.insert(END, bot_name + ": Sorry, I didn't hear what you said. Please try again or type in the box below.\n\n")
+                self.chatscreen.configure(state=DISABLED)
+                self.chatscreen.see(END)
+                print("Unknown voice input.")
+            except speech.RequestError:
+                self.chatscreen.configure(state=NORMAL)
+                self.chatscreen.insert(END, bot_name + ": Sorry, I cannot access a microphone at this time. Please try again or type in the box below.\n\n")
+                self.chatscreen.configure(state=DISABLED)
+                self.chatscreen.see(END)
+                print("Something went wrong, error {0}".format(error))
+            except speech.UnboundLocalError:
+                self.chatscreen.configure(state=NORMAL)
+                self.chatscreen.insert(END, bot_name + ": Sorry, the voice functionality is experiencing difficulty right now. Please try again or type in the box below.\n\n")
+                self.chatscreen.configure(state=DISABLED)
+                self.chatscreen.see(END)
+                print("Something went wrong, error {0}".format(error)) 
+                
+            a_thread = threading.Thread(target = voicemessage(self, event))
+            a_thread.start()
     ########################voice addition v4 end######################################################
         
     #save the chatlog and close if escape is pressed (NOTE: only works when escaped out)
