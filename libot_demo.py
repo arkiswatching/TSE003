@@ -263,7 +263,7 @@ class chat_GUI:
         self.chatscreen.see(END)
         
         ##########################voicemessage#####################################################
-    def voicemessage(self, event):
+    def voicemessage (self, event):
         self.chatscreen.configure(state=NORMAL)
         self.chatscreen.insert(END, bot_name + ": What would you like to say? Please speak clearly so I can understand you.\n\n")
         self.chatscreen.configure(state=DISABLED)
@@ -275,7 +275,7 @@ class chat_GUI:
     def voiceinput(self, event):
         def voicemessage(self, event):
             #debug command to test button, to be removed when function the function is finished
-            print ("acknowledged.")###################################################
+            print ("acknowledged.") ###################################################
             robot = speech.Recognizer()
             microphone = speech.Microphone()
             with microphone as source:
@@ -301,9 +301,8 @@ class chat_GUI:
                 self.chatscreen.configure(state=DISABLED)
                 self.chatscreen.see(END)
                 print("Something went wrong, error {0}".format(error)) 
-                
-            a_thread = threading.Thread(target = voicemessage(self, event))
-            a_thread.start()
+        a_thread = threading.Thread(target = voicemessage(self, event))
+        a_thread.start()
     ########################voice addition v4 end######################################################
         
     #save the chatlog and close if escape is pressed (NOTE: only works when escaped out)
