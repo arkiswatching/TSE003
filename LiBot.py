@@ -53,13 +53,11 @@ class chat_GUI:
                                font = "sans-serif 14 bold",
                                pady = 5)
         self.Title.place(relwidth = 1)
-        
+
         ###################button start#################################
         voicebutton = Button(self.Title,
                                 text = "🎤",
                                 font = "sans-serif 11", 
-                                #width = 20,
-                                #height = 20,
                                 bg = "#002654",
                                 fg = "white")
 
@@ -86,12 +84,9 @@ class chat_GUI:
         self.chatscreen.place(relheight = 0.805,
                             relwidth = 0.95, 
                             rely = 0.08)
-        self.chatscreen.configure(cursor="arrow", state=DISABLED)
-        self.chatscreen.configure(state=NORMAL)
-        welcome = "LiBot: Hello! I'm LiBot, a chatbot created to help you with any questions you may have regarding the University of Lincoln's library. Press the 'esc' key if you wish to exit.\n\n"
-        self.chatscreen.insert(END, welcome)
-        savefile.write(welcome)
-        self.chatscreen.configure(state=DISABLED)
+
+        self.chat_insert_response(welcome)
+        self.chatscreen.configure(cursor="arrow")
         
         #chatscreen interface scrollbar (self evidant what its for)
         scrollbar = Scrollbar(self.Window)
@@ -127,9 +122,9 @@ class chat_GUI:
                             rely = 0.008,
                             relx = 0.011)
         
-        #messenger interface scrollbar (self evidant what its for)
+        #messenger interface scrollbar (in case of extended entry)
         messengerscrollbar = Scrollbar(self.messengerplace)
-        # place the scroll bar on window so doesn't cover chatscreen
+        # place the scroll bar on window so doesn't cover message box at all
         messengerscrollbar.place(relheight = 0.06,
                                   relx = 0.72,
                                   rely = 0.008
@@ -144,7 +139,6 @@ class chat_GUI:
         self.messenger.bind("<Return>", self.entermsg)
         #when escaped out, the program saves to the log and exits.
         self.messenger.bind("<Escape>", self.quit)
-        #self.protocol(WM_DELETE_WINDOW, self.quit)
         #sendbutton coding 
         sendbutton = Button(self.messengerplace,
                                 text = "Send",
@@ -163,21 +157,21 @@ class chat_GUI:
     def entermsg(self, event):
         #values to take row 1, character 0 to end
         message = self.messenger.get(1.0, END)
-        self.chat_insert_message(message)
-        response = get_response(message, df)
-        self.chat_insert_response(response)
+        message = message.strip("\n")
+        #if messenger is empty dont trigger
+        if not message:
+            return 'break'
+        else:
+            self.chat_insert_message(message)
+            response = get_response(message, df)
+            self.chat_insert_response(response)
 
     #insert from messenger into chatscreen
     def chat_insert_message(self, message):
-        #if messenger is empty dont trigger
-        if not message:
-            return
-
-        #clear messenger when message is sent
-        #values to take row 1, character 0 to end
+        #clear messenger when message is sent (values to take row 1, character 0 to end)
         self.messenger.delete(1.0, END)
         #dump message from user on the end of the chatlog
-        usermessage = f"{user_name}: {message}\n"
+        usermessage = f"{user_name}: {message}\n\n"
         self.chatscreen.configure(state=NORMAL)
         self.chatscreen.insert(END, usermessage)
         self.chatscreen.configure(state=DISABLED)
@@ -197,7 +191,7 @@ class chat_GUI:
 
     #Function to run the voice input on a thread.
     def voicerun(self, event):
-        self.chat_insert_response("What would you like to say? Please speak clearly so I can understand you.")
+        self.chat_insert_response(listening)
         voice_thread = threading.Thread(target = self.voiceinput)
         voice_thread.start()
 
@@ -210,15 +204,16 @@ class chat_GUI:
         try:
             self.messenger.insert(END, robot.recognize_google(audio))
             self.entermsg(None)
+        #error handling
         except speech.UnknownValueError:
-            self.chat_insert_response("Sorry, I didn't hear what you said. Please try again or type in the box below.")
+            self.chat_insert_response(unknownvalueerror)
             print("Unknown voice input.")
         except speech.RequestError:
-            self.chat_insert_response("Sorry, I cannot access a microphone at this time. Please try again or type in the box below.")
+            self.chat_insert_response(requesterror)
             print("Something went wrong, error {0}".format(error))
         except speech.UnboundLocalError:
-            self.chat_insert_response("Sorry, the voice functionality is experiencing difficulty right now. Please try again or type in the box below.")
-            print("Something went wrong, error {0}".format(error))  
+            self.chat_insert_response(unboundlocalerror)
+            print("Something went wrong, error {0}".format(error)) 
 
     #save the chatlog and close if escape is pressed (NOTE: only works when escaped out)
     def quit(self, event):
@@ -251,7 +246,7 @@ def get_response(message, df):
     cos_sim = 1 - pairwise_distances(df_tfidf,input_tfidf,metric = 'cosine') # performs cosine similarity between vectoried data and input
     index = cos_sim.argmax() # finds largest similarity values index
     if cos_sim[index] < 0.6:
-        get_response = "Sorry, I didn't understand that."
+        get_response = notfound
     else:
         get_response = df['Response'].loc[index]
     return get_response
@@ -259,6 +254,14 @@ def get_response(message, df):
 #user and bot name
 user_name = "User"
 bot_name = "LiBot"
+
+#message strings (focused to make tweaking messages easier)
+welcome = "Hello! I'm " + bot_name + ", a chatbot created to help you with any questions you may have regarding the University of Lincoln's library. Press the 'esc' key if you wish to exit."
+listening = "What would you like to say? Please speak clearly so I can understand you."
+unknownvalueerror = "Sorry, I didn't hear what you said. Please try again or type in the box below."
+requesterror = "Sorry, I cannot access a microphone at this time. Please try again or type in the box below."
+unboundlocalerror = "Sorry, the voice functionality is experiencing difficulty right now. Please try again or type in the box below."
+notfound = "Sorry, I didn't understand that."
 
 #colouration settings, makes it easier to do sweeping changes to the UI scheme
 BG = "#002654"
@@ -268,7 +271,12 @@ FGtext = "#000000"
 #save file data
 timestamp = datetime.now()
 timestamp = timestamp.strftime("%Y-%m-%d %H-%M-%S")
-savefile = open(str(timestamp) + ".txt", "a")
+#File location change variable.
+filepath = 'chatlog'
+if os.path.exists(filepath) == False:
+    os.mkdir(filepath)
+savefile = open(filepath + '\\' + str(timestamp) + ".txt", "a")
+
 
 #Get file path
 if getattr(sys, 'frozen', False):
