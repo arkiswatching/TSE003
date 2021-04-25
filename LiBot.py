@@ -54,21 +54,18 @@ class chat_GUI:
                                pady = 5)
         self.Title.place(relwidth = 1)
 
-        ###################button start#################################
+        #voice chat button
         voicebutton = Button(self.Title,
                                 text = "🎤",
                                 font = "sans-serif 11", 
                                 bg = "#002654",
                                 fg = "white")
-
-        #still getting voice function to work, but the button, its placement and method of acknowledgment has been fixed to bind to the function when integrated properly.
         voicebutton.bind('<ButtonPress-1>', self.voicerun)
 
         voicebutton.place(relx = 0.95,
                              rely = 0.20,
                              relheight = 0.70, 
                              relwidth = 0.05)
-        ###################button end#################################
         
         #chatscreen interface (shows chat to date)
         self.chatscreen = Text(self.Window,
@@ -77,18 +74,20 @@ class chat_GUI:
                              bg = BGtext,
                              fg = FGtext,
                              font = "sans-serif 12",
-                             #wrapping perameter
                              wrap = WORD,
                              padx = 5,
-                             pady = 5)
+                             pady = 5,
+                             cursor = "arrow")
+
         self.chatscreen.place(relheight = 0.805,
                             relwidth = 0.95, 
                             rely = 0.08)
-
-        self.chat_insert_response(welcome)
-        self.chatscreen.configure(cursor="arrow")
         
-        #chatscreen interface scrollbar (self evidant what its for)
+        #chat welcome message
+        self.chat_insert_response(welcome)
+        #self.chatscreen.configure(cursor="arrow")
+        
+        #chatscreen interface scrollbar
         scrollbar = Scrollbar(self.Window)
         # place the scroll bar on window so doesn't cover chatscreen
         scrollbar.place(relheight = 0.805,
@@ -111,12 +110,9 @@ class chat_GUI:
                               bg = BGtext,
                               fg = FGtext,
                               wrap = WORD,
-                              #padx = 5,#, 10),
-                              #wraplength = 500,
                               font = "sans-serif 12")
 
         #place the enter message widget in the main window
-        #self.messenger.place(relwidth = 0.74,
         self.messenger.place(relwidth = 0.70,
                             relheight = 0.06,
                             rely = 0.008,
@@ -129,7 +125,6 @@ class chat_GUI:
                                   relx = 0.72,
                                   rely = 0.008
                                   )
-                                  #relx = 0.958)
         #command so it scrolls the text (y-axis)
         messengerscrollbar.config(command = self.messenger.yview)
 
@@ -165,6 +160,7 @@ class chat_GUI:
             self.chat_insert_message(message)
             response = get_response(message, df)
             self.chat_insert_response(response)
+            return 'break'
 
     #insert from messenger into chatscreen
     def chat_insert_message(self, message):
@@ -185,17 +181,16 @@ class chat_GUI:
         self.chatscreen.configure(state=DISABLED)
         #write the user input and reply to the savefile log
         savefile.write(botmessage)
-
         #autoscroll to the end when sending
         self.chatscreen.see(END)
 
-    #Function to run the voice input on a thread.
+    #function to run the voice input on a thread.
     def voicerun(self, event):
         self.chat_insert_response(listening)
         voice_thread = threading.Thread(target = self.voiceinput)
         voice_thread.start()
 
-    ########################voice addition v4######################################################
+    #voice chat function
     def voiceinput(self):
         robot = speech.Recognizer()
         microphone = speech.Microphone()
@@ -271,12 +266,12 @@ FGtext = "#000000"
 #save file data
 timestamp = datetime.now()
 timestamp = timestamp.strftime("%Y-%m-%d %H-%M-%S")
-#File location change variable.
+
+#File location variable.
 filepath = 'chatlog'
 if os.path.exists(filepath) == False:
     os.mkdir(filepath)
 savefile = open(filepath + '\\' + str(timestamp) + ".txt", "a")
-
 
 #Get file path
 if getattr(sys, 'frozen', False):
