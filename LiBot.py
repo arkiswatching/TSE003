@@ -83,6 +83,10 @@ class chat_GUI:
                             relwidth = 0.95, 
                             rely = 0.08)
         
+        #message colouration tags
+        self.chatscreen.tag_config('bot', background = BGbot)
+        self.chatscreen.tag_config('error', background = BGerror)
+
         #initial chat welcome message
         self.chat_insert_response(welcome)
         #self.chatscreen.configure(cursor="arrow")
@@ -177,7 +181,11 @@ class chat_GUI:
         #chatbot response
         botmessage = f"{bot_name}: {response}\n\n"
         self.chatscreen.configure(state=NORMAL)
-        self.chatscreen.insert(END, botmessage)
+        #if statement to change colour of the message bg if the response is an error (NOTE: ad "notfound" if "response not found" is going to change colour).
+        if (response == requesterror or response == unknownvalueerror or response == unboundlocalerror):
+            self.chatscreen.insert(END, botmessage, 'error')
+        else:
+            self.chatscreen.insert(END, botmessage, 'bot')
         self.chatscreen.configure(state=DISABLED)
         #write the user input and reply to the savefile log
         savefile.write(botmessage)
@@ -259,6 +267,8 @@ notfound = "Sorry, I didn't understand that."
 BG = "#002654"
 BGtext = "#ffffff"
 FGtext = "#000000"
+BGbot = "#cce0ff"
+BGerror = "#ffff99"
 
 #save file data
 timestamp = datetime.now()
