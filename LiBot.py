@@ -166,20 +166,24 @@ class chat_GUI:
             self.chat_insert_response(response)
             return 'break'
 
+    def chat_insert(self, text):
+        self.chatscreen.configure(state=NORMAL)
+        self.chatscreen.insert(END, text)
+        self.chatscreen.configure(state=DISABLED)
+        savefile.write(text)
+        
     #insert from messenger into chatscreen
     def chat_insert_message(self, message):
         #clear messenger when message is sent (values to take row 1, character 0 to end)
         self.messenger.delete(1.0, END)
         #dump message from user on the end of the chatlog
-        usermessage = f"{user_name}: {message}\n\n"
-        self.chatscreen.configure(state=NORMAL)
-        self.chatscreen.insert(END, usermessage)
-        self.chatscreen.configure(state=DISABLED)
-        savefile.write(usermessage)
+        usermessage = f"{user_name}: {message}\n"
+        self.chat_insert(usermessage)
+        self.chat_insert("\n")
 
     def chat_insert_response(self, response):
         #chatbot response
-        botmessage = f"{bot_name}: {response}\n\n"
+        botmessage = f"{bot_name}: {response}\n"
         self.chatscreen.configure(state=NORMAL)
         #if statement to change colour of the message bg if the response is an error (NOTE: ad "notfound" if "response not found" is going to change colour).
         if (response == requesterror or response == unknownvalueerror or response == unboundlocalerror):
@@ -190,6 +194,7 @@ class chat_GUI:
         #write the user input and reply to the savefile log
         savefile.write(botmessage)
         #autoscroll to the end when sending
+        self.chat_insert("\n")
         self.chatscreen.see(END)
 
     #function to run the voice input on a thread.
