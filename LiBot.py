@@ -83,11 +83,11 @@ class chat_GUI:
                             relwidth = 0.95, 
                             rely = 0.08)
         
-        #chat welcome message
+        #initial chat welcome message
         self.chat_insert_response(welcome)
         #self.chatscreen.configure(cursor="arrow")
         
-        #chatscreen interface scrollbar
+        #chatscreen interface scrollbar (self evidant what its for)
         scrollbar = Scrollbar(self.Window)
         # place the scroll bar on window so doesn't cover chatscreen
         scrollbar.place(relheight = 0.805,
@@ -202,13 +202,10 @@ class chat_GUI:
         #error handling
         except speech.UnknownValueError:
             self.chat_insert_response(unknownvalueerror)
-            print("Unknown voice input.")
         except speech.RequestError:
             self.chat_insert_response(requesterror)
-            print("Something went wrong, error {0}".format(error))
         except speech.UnboundLocalError:
             self.chat_insert_response(unboundlocalerror)
-            print("Something went wrong, error {0}".format(error)) 
 
     #save the chatlog and close if escape is pressed (NOTE: only works when escaped out)
     def quit(self, event):
